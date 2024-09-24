@@ -739,3 +739,39 @@ export interface Queue {
     currently_playing: TrackItem | null
     queue: TrackItem[]
 }
+
+// Error types
+
+export interface SpotifyErrorBody {
+    status?: number;
+    message: string;
+}
+
+export class SpotifyAPIError extends Error implements SpotifyErrorBody {
+    readonly status?: number;
+
+    constructor(message: string, status?: number) {
+        super(message);
+        this.status = status;
+    }
+}
+
+export class BadOrExpiredTokenError extends SpotifyAPIError {
+    constructor(message: string) {
+        super(message, 401);
+    }
+}
+
+export class BadOAuthRequestError extends SpotifyAPIError {
+    constructor(message: string) {
+        super(message, 403);
+    }
+}
+
+export class RateLimitExceededError extends SpotifyAPIError {
+    constructor(message: string) {
+        super(message, 429);
+    }
+}
+
+export class UnrecognizedResponseCodeError extends SpotifyAPIError {}
